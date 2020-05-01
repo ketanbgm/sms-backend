@@ -13,6 +13,7 @@ var getData = async function(req, res, next) {
     let start_date_to = req.body.start_date_to;
     let end_date_from = req.body.end_date_from;
     let end_date_to = req.body.end_date_to;
+    let sorting = req.body.sorting;
     console.log(start_date_from, end_date_to)
 
     if(start_date_from && start_date_to){
@@ -30,6 +31,34 @@ var getData = async function(req, res, next) {
     let skip = page * numPerPage;
     var limit = skip + ',' + numPerPage;
     var whereClause = '';
+    var orderByClause = ' order by ';
+    console.log("sorting",sorting)
+    if(!sorting) {
+        orderByClause = '';
+       // orderByClause
+    } else {
+
+        if(sorting.city){
+            orderByClause = `${orderByClause} city ${sorting.city},`
+        }
+        if(sorting.price){
+            orderByClause = `${orderByClause} price ${sorting.price},`
+        }
+        if(sorting.start_date){
+            orderByClause = `${orderByClause} start_date ${sorting.start_date},`
+        }
+        if(sorting.end_date){
+            orderByClause = `${orderByClause} end_date ${sorting.end_date},`
+        }
+        if(sorting.status){
+            orderByClause = `${orderByClause} status ${sorting.status},`
+        }
+        if(sorting.color){
+            orderByClause = `${orderByClause} color ${sorting.color},`
+        }
+
+        orderByClause = orderByClause.substring(0, orderByClause.length - 1); 
+    }
     console.log(start_date_from, start_date_to)
     if (start_date_from && start_date_to) {
         whereClause += `and start_date between '${start_date_from}' and '${start_date_to}' `
@@ -43,7 +72,8 @@ var getData = async function(req, res, next) {
     if (count_result[0][0].numRows > 0) {
         numRows = count_result[0][0].numRows;
         numPages = Math.ceil(numRows / numPerPage);
-        let getCities = `SELECT * FROM city where 1 ${whereClause}  LIMIT ${limit}`;
+        let getCities = `SELECT * FROM city where 1 ${whereClause}  ${orderByClause}  LIMIT ${limit}`;
+        console.log(getCities)
         let reportResult = await executer.executeQuery([getCities])
 
         // console.log("reportResult", reportResult)
@@ -152,7 +182,7 @@ var getOneCity = async function(req,res,next){
 
 
 var deleteOneCity = async function(req,res,next){
-    var city_id = req.body.city_id;
+    var city_id = req.query.city_id;
     if(!city_id){
         response.returnFalse(req, res, 'City is required', []);
     } else {

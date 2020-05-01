@@ -11,7 +11,7 @@ var http = require('http');
  * Get port from environment and store in Express.
  */
 
-var port = 3000;
+var port = 8055;
 app.set('port', port);
 
 /**
@@ -38,7 +38,7 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  console.log('Listening on ' + bind);
+  console.log('Listening on 8055');
 }
 
 module.exports = server;

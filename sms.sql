@@ -21,6 +21,13 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
+CREATE database if not exists sms;
+
+USE sms;
+
+GRANT USAGE ON *.*  TO 'root'@'%';
+GRANT ALL PRIVILEGES ON `sms`.* TO 'root'@'%' IDENTIFIED BY 'r00t' ;
+flush PRIVILEGES;
 
 --
 -- Table structure for table `city`

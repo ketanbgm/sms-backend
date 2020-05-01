@@ -1,0 +1,31 @@
+version: '2.2'
+
+x-common-config: &common-config
+    image: ketan/sms:v1.0
+
+services:
+    buid-app:
+        <<: *common-config
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+
+    web-app:
+        <<: *common-config
+        ports:
+            - "8055:3000"
+        restart: unless-stopped
+        command: "node bin/www"
+        depends_on:
+            #          - buid-app
+          - mysql
+
+    mysql:
+        image: "wangxian/alpine-mysql"
+        ports:
+          - 3306
+        environment:
+          - MYSQL_ROOT_PASSWORD=root
+        volumes:
+          - ./data/:/app
+
